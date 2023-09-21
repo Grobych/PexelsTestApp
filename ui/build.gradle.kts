@@ -1,23 +1,18 @@
+@Suppress("DSL_SCOPE_VIOLATION") // TODO: Remove once KTIJ-19369 is fixed
 plugins {
-    id("com.android.application")
+    id("com.android.library")
     id("org.jetbrains.kotlin.android")
 }
 
 android {
-    namespace = "com.globa.pexelstestapp"
+    namespace = "com.globa.pexelstestapp.ui"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.globa.pexelstestapp"
         minSdk = 24
-        targetSdk = 34
-        versionCode = 1
-        versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        vectorDrawables {
-            useSupportLibrary = true
-        }
+        consumerProguardFiles("consumer-rules.pro")
     }
 
     buildTypes {
@@ -42,20 +37,9 @@ android {
     composeOptions {
         kotlinCompilerExtensionVersion = "1.4.3"
     }
-    packaging {
-        resources {
-            excludes += "/META-INF/{AL2.0,LGPL2.1}"
-        }
-    }
 }
 
 dependencies {
-    implementation (project(path = ":ui"))
-
-
-
     implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.activity.compose)
-
-
+    implementation(libs.compose.material3)
 }

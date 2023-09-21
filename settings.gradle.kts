@@ -1,3 +1,5 @@
+@file:Suppress("UnstableApiUsage")
+
 pluginManagement {
     repositories {
         google()
@@ -15,4 +17,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "Pexels Test App"
 include(":app")
- 
+include(":ui")
