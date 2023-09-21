@@ -41,4 +41,7 @@ dependencies {
     implementation(libs.retrofit)
     implementation(libs.gson)
     implementation(libs.gson.converter)
+
+    testImplementation(libs.junit)
+    testImplementation(libs.coroutines.test)
 }

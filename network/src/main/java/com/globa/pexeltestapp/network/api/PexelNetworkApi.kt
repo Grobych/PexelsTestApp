@@ -12,14 +12,14 @@ interface PexelNetworkApi {
 
     @GET("curated")
     suspend fun getCuratedPhotos(
-        @Query(value = "page") pageNumber: Int,
-        @Query(value = "perPage") itemsPerPage: Int
+        @Query(value = "page") pageNumber: Int = 1,
+        @Query(value = "per_page") itemsPerPage: Int = 30
     ): Response<CuratedResult>
 
     @GET("search")
     suspend fun searchPhotos(
         @Query(value = "query") line: String,
-        @Query(value = "page") pageNumber: Int,
-        @Query(value = "perPage") itemsPerPage: Int
+        @Query(value = "page") pageNumber: Int = 1,
+        @Query(value = "per_page") itemsPerPage: Int = 30
     ): Response<SearchResult>
 }
