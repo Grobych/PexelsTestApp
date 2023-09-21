@@ -16,6 +16,7 @@ lifecycleRuntimeKtx = "2.6.2"
 mockk = "1.13.5"
 navigation = "2.7.2"
 navigation-hilt = "1.0.0"
+retrofit = "2.9.0"
 room = "2.5.2"
 splashscreen = "1.0.1"
 agp = "8.1.0"
@@ -61,6 +62,9 @@ junit = { module = "junit:junit", version.ref = "junit"}
 # Coroutines
 coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlin-coroutines"}
 coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlin-coroutines"}
+
+# Retrofit
+retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit"}
 
 # Room
 room = { module = "androidx.room:room-ktx", version.ref = "room" }
