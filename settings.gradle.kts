@@ -19,4 +19,5 @@ rootProject.name = "Pexels Test App"
 include(":app")
 include(":ui")
 include(":data:featured")
+include(":data:photos")
 include(":network")
