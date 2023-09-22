@@ -7,5 +7,6 @@ data class SearchResult(
     @SerializedName("page") val page: Int,
     @SerializedName("per_page") val itemsPerPage: Int,
     @SerializedName("photos") val photos: List<PhotoResource>,
-    @SerializedName("next_page") val nextPageURL: String
+    @SerializedName("prev_page") val previousPageURL: String?,
+    @SerializedName("next_page") val nextPageURL: String?
 )
