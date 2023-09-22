@@ -5,7 +5,7 @@ import com.globa.pexeltestapp.network.internal.baseUrl
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
 
-class NetworkServiceTest() {
+class NetworkServiceTest {
 
     @Test
     fun retrofitInitTest() {
@@ -15,7 +15,7 @@ class NetworkServiceTest() {
     @Test
     fun getPhotoResponseTest() = runTest {
         val id = 2014422
-        val networkApi = NetworkModule().providePexelApi(NetworkModule().provideRetrofit())
+        val networkApi = NetworkModule().providePexelPhotosNetworkApi(NetworkModule().provideRetrofit())
         val result = networkApi.getPhoto(id)
         assert(result.isSuccessful)
         assert(result.code() == 200)
@@ -26,7 +26,7 @@ class NetworkServiceTest() {
     @Test
     fun getCuratedTest() = runTest {
         val perPage = 30
-        val networkApi = NetworkModule().providePexelApi(NetworkModule().provideRetrofit())
+        val networkApi = NetworkModule().providePexelPhotosNetworkApi(NetworkModule().provideRetrofit())
         val result = networkApi.getCuratedPhotos(itemsPerPage = perPage)
         assert(result.isSuccessful)
         assert(result.body() != null)
@@ -37,10 +37,20 @@ class NetworkServiceTest() {
     @Test
     fun getSearchTest() = runTest {
         val testLine = "Nature"
-        val networkApi = NetworkModule().providePexelApi(NetworkModule().provideRetrofit())
+        val networkApi = NetworkModule().providePexelPhotosNetworkApi(NetworkModule().provideRetrofit())
         val result = networkApi.searchPhotos(line = testLine)
         assert(result.isSuccessful)
         assert(result.body() != null)
         assert(result.body()!!.photos.isNotEmpty())
+    }
+
+    @Test
+    fun getFeaturedCollectionTest() = runTest {
+        val perPage = 7
+        val networkApi = NetworkModule().providePexelCollectionsNetworkApi(NetworkModule().provideRetrofit())
+        val result = networkApi.getFeaturedCollections(perPage = perPage)
+        assert(result.isSuccessful)
+        assert(result.body() != null)
+        assert(result.body()!!.collection.size == perPage)
     }
 }

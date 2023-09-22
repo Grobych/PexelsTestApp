@@ -6,7 +6,7 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 
-interface PexelNetworkApi {
+interface PexelPhotosNetworkAPI {
     @GET("photos/{id}")
     suspend fun getPhoto(@Path(value = "id") id: Int): Response<PhotoResource>
 
