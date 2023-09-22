@@ -1,8 +1,5 @@
 @file:Suppress("UnstableApiUsage")
 
-include(":network")
-
-
 pluginManagement {
     repositories {
         google()
@@ -21,3 +18,5 @@ dependencyResolutionManagement {
 rootProject.name = "Pexels Test App"
 include(":app")
 include(":ui")
+include(":data:featured")
+include(":network")

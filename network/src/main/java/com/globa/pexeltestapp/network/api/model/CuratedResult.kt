@@ -1,4 +1,4 @@
-package com.globa.pexeltestapp.network.api
+package com.globa.pexeltestapp.network.api.model
 
 import com.google.gson.annotations.SerializedName
 

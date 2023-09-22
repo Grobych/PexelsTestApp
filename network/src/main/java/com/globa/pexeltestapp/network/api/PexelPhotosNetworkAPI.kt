@@ -1,5 +1,8 @@
 package com.globa.pexeltestapp.network.api
 
+import com.globa.pexeltestapp.network.api.model.CuratedResult
+import com.globa.pexeltestapp.network.api.model.PhotoResource
+import com.globa.pexeltestapp.network.api.model.SearchResult
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Path

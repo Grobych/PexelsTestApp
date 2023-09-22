@@ -1,5 +1,6 @@
 package com.globa.pexeltestapp.network.api
 
+import com.globa.pexeltestapp.network.api.model.FeaturedCollection
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Query
