@@ -39,5 +39,7 @@ dependencies {
     kapt(libs.hilt.compiler)
     implementation(libs.retrofit)
 
+    implementation(libs.paging.core)
+
     implementation(project(path = ":network"))
 }
