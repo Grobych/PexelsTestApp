@@ -15,15 +15,17 @@ import javax.inject.Inject
 
 class PhotoRepositoryImpl @Inject constructor(
     private val photosNetworkDataSource: PhotosNetworkDataSource,
+    private val remoteKeyDataSource: PhotoRemoteKeyDataSource,
     private val database: PhotosDatabase
 ): PhotoRepository {
     @OptIn(ExperimentalPagingApi::class)
     override suspend fun getPhotos(searchLine: String): Flow<PagingData<Photo>> = Pager(
-        config = PagingConfig(pageSize = 30),
+        config = PagingConfig(pageSize = pageSize),
         remoteMediator = PhotosRemoteMediator(
             line = searchLine,
             database = database,
-            networkDataSource = photosNetworkDataSource
+            networkDataSource = photosNetworkDataSource,
+            remoteKeyDataSource = remoteKeyDataSource
         ),
         pagingSourceFactory = {
             database.photosDao.getPhotos()

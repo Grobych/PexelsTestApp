@@ -40,6 +40,9 @@ dependencies {
     implementation(libs.retrofit)
 
     implementation(libs.paging.core)
+    implementation(libs.paging.room)
+    implementation(libs.room)
 
     implementation(project(path = ":network"))
+    implementation(project(path = ":database"))
 }
