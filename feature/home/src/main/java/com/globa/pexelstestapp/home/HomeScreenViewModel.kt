@@ -22,8 +22,11 @@ class HomeScreenViewModel @Inject constructor(
     private val _searchLine = MutableStateFlow("")
     val searchLine = _searchLine.asStateFlow()
 
-    private val _photosUiState = MutableStateFlow<HomeScreenPhotosUiState>(HomeScreenPhotosUiState.Init)
+    private val _photosUiState = MutableStateFlow<HomeScreenPhotosUiState>(HomeScreenPhotosUiState.Data(null))
     val photosUiState = _photosUiState.asStateFlow()
+
+    private val _showLoadingAnimation = MutableStateFlow(true)
+    val showLoadingAnimation = _showLoadingAnimation.asStateFlow()
 
     fun updateSearchLine(line: String) = _searchLine.update { line }
 
@@ -41,16 +44,20 @@ class HomeScreenViewModel @Inject constructor(
             .launchIn(viewModelScope)
     }
     private suspend fun fetchCurated() {
+        _showLoadingAnimation.value = true
         _photosUiState.value =
             HomeScreenPhotosUiState.Data(
                 data = photoRepository.getCurated()
             )
+        _showLoadingAnimation.value = false
     }
     private suspend fun searchPhotos(line: String) {
+        _showLoadingAnimation.value = true
         _photosUiState.value =
             HomeScreenPhotosUiState.Data(
                 data = photoRepository.searchPhoto(line)
             )
+        _showLoadingAnimation.value = false
     }
 
 }

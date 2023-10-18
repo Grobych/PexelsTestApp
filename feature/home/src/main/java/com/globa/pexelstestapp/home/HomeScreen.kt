@@ -1,5 +1,6 @@
 package com.globa.pexelstestapp.home
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -13,6 +14,7 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import com.globa.pexelstestapp.home.internal.NetworkErrorPlaceholder
 import com.globa.pexelstestapp.home.internal.NoItemsPlaceholder
 import com.globa.pexelstestapp.home.internal.PhotoGrid
+import com.globa.pexelstestapp.home.internal.ScrollAnimation
 import com.globa.pexelstestapp.home.internal.SearchField
 
 @Composable
@@ -22,6 +24,8 @@ fun HomeScreen(
 ) {
     val uiState = viewModel.photosUiState.collectAsState()
     val searchLine = viewModel.searchLine.collectAsState()
+    val showLoadingAnimation = viewModel.showLoadingAnimation.collectAsState()
+
     val onSearchLineChanged = fun(line: String) {
         viewModel.updateSearchLine(line)
     }
@@ -33,26 +37,33 @@ fun HomeScreen(
     }
     Scaffold(
         topBar = {
-            Header(searchLine = searchLine.value, onSearchLineChanged = onSearchLineChanged)
+            Column(
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Header(searchLine = searchLine.value, onSearchLineChanged = onSearchLineChanged)
+                if (showLoadingAnimation.value)
+                    ScrollAnimation(modifier = Modifier.padding(start = 4.dp, end = 4.dp))
+            }
         }
     ) {
         when (val state = uiState.value) {
             is HomeScreenPhotosUiState.Data -> {
-                val photos = state.data.collectAsLazyPagingItems()
-                if (photos.itemCount == 0 && searchLine.value.isNotEmpty()) {
-                    NoItemsPlaceholder(
-                        modifier = Modifier.padding(it),
-                        onExploreButtonClick = onExploreButtonClick
-                    )
-                } else {
-                    PhotoGrid(
-                        modifier = Modifier.padding(it),
-                        photos = state.data.collectAsLazyPagingItems(),
-                        onPhotoClick = onPhotoClick
-                    )
+                state.data?.let { data ->
+                    val photos = data.collectAsLazyPagingItems()
+                    if (photos.itemCount == 0 && searchLine.value.isNotEmpty()) {
+                        NoItemsPlaceholder(
+                            modifier = Modifier.padding(it),
+                            onExploreButtonClick = onExploreButtonClick
+                        )
+                    } else {
+                        PhotoGrid(
+                            modifier = Modifier.padding(it),
+                            photos = data.collectAsLazyPagingItems(),
+                            onPhotoClick = onPhotoClick
+                        )
+                    }
                 }
             }
-            HomeScreenPhotosUiState.Init -> {}
             HomeScreenPhotosUiState.NetworkConnectionError -> {
                 NetworkErrorPlaceholder(
                     modifier = Modifier.padding(it),
