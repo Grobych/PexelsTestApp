@@ -22,7 +22,7 @@ class SearchPhotoPagingSource(
                         if (response.photos.isEmpty()) {
                             null
                         } else {
-                            page + (params.loadSize / pageSize)
+                            page + 1
                         }
                     return LoadResult.Page(
                         data = response.photos.map { Photo(id = it.id, url = it.sources.medium) },
