@@ -12,7 +12,8 @@ data class PhotoDBModel(
     val url: String,
     val photographer: String,
     val desc: String,
-    @Embedded val imageURL: ImageURL
+    @Embedded val imageURL: ImageURL,
+    @ColumnInfo(name = "timestamp") val timestamp: Long
 )
 
 

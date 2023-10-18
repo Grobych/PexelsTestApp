@@ -9,9 +9,13 @@ import com.globa.pexelstestapp.database.api.PhotosDatabase
 import com.globa.pexelstestapp.database.api.model.PhotoDBModel
 import com.globa.pexelstestapp.database.api.model.PhotoRemoteKey
 import com.globa.pexelstestapp.photos.internal.mapping.asDBModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import retrofit2.HttpException
 import java.io.IOException
 import java.io.InvalidObjectException
+import java.util.Date
+import java.util.concurrent.TimeUnit
 
 @OptIn(ExperimentalPagingApi::class)
 class PhotosRemoteMediator(
@@ -66,4 +70,16 @@ class PhotosRemoteMediator(
             MediatorResult.Error(e)
         }
     }
+
+    override suspend fun initialize(): InitializeAction {
+        val cacheTimeout = TimeUnit.MILLISECONDS.convert(1, TimeUnit.HOURS)
+        return withContext(Dispatchers.IO) {
+            if (Date().time - database.photosDao.getLastUpdated() <= cacheTimeout)
+            {
+                InitializeAction.SKIP_INITIAL_REFRESH
+            } else {
+                InitializeAction.LAUNCH_INITIAL_REFRESH
+            }
+        }
+        }
 }

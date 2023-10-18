@@ -21,4 +21,6 @@ interface PhotosDao {
     fun removePhoto(photo: PhotoDBModel)
     @Query("DELETE FROM photos")
     fun clearAll()
+    @Query("select MAX(timestamp) from photos")
+    fun getLastUpdated(): Long
 }

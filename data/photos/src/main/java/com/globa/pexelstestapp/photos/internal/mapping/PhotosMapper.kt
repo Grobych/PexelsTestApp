@@ -5,6 +5,7 @@ import com.globa.pexelstestapp.database.api.model.PhotoDBModel
 import com.globa.pexelstestapp.photos.api.Photo
 import com.globa.pexeltestapp.network.api.model.ImageSources
 import com.globa.pexeltestapp.network.api.model.PhotoResource
+import java.util.Date
 
 fun PhotoResource.asDBModel(): PhotoDBModel =
     PhotoDBModel(
@@ -12,7 +13,8 @@ fun PhotoResource.asDBModel(): PhotoDBModel =
         url= this.url,
         photographer = this.photographer,
         desc = this.description,
-        imageURL = this.sources.asDBModel()
+        imageURL = this.sources.asDBModel(),
+        timestamp = Date().time
     )
 
 fun ImageSources.asDBModel(): ImageURL =
