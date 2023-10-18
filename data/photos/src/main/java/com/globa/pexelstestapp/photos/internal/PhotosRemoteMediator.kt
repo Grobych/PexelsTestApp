@@ -60,7 +60,7 @@ class PhotosRemoteMediator(
                 database.photosRemoteKeyDao.insertAll(keys)
             }
             MediatorResult.Success(
-                endOfPaginationReached = response.photos.isEmpty()
+                endOfPaginationReached = endOfPaginationReached
             )
         } catch (e: IOException) {
             MediatorResult.Error(e)
