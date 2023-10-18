@@ -13,18 +13,25 @@ class SearchPhotoPagingSource(
     ): LoadResult<Int, Photo> {
         return try {
             val page = params.key ?: 1
-            val response = networkDataSource.search(searchLine, page)
-            val nextKey =
-                if (response.photos.isEmpty()) {
-                    null
-                } else {
-                    page + (params.loadSize / pageSize)
+            when (val response = networkDataSource.search(searchLine, page)) {
+                is PhotosNetworkResponse.Error -> {
+                    return LoadResult.Error(Throwable("${response.code}: ${response.message}"))
                 }
-            return LoadResult.Page(
-                data = response.photos.map { Photo(id = it.id, url = it.sources.medium) },
-                prevKey =  if (page == 1) null else page,
-                nextKey = nextKey
-            )
+                is PhotosNetworkResponse.Ok -> {
+                    val nextKey =
+                        if (response.photos.isEmpty()) {
+                            null
+                        } else {
+                            page + (params.loadSize / pageSize)
+                        }
+                    return LoadResult.Page(
+                        data = response.photos.map { Photo(id = it.id, url = it.sources.medium) },
+                        prevKey =  if (page == 1) null else page,
+                        nextKey = nextKey
+                    )
+                }
+            }
+
         } catch (e: Exception) {
             LoadResult.Error(e)
         }

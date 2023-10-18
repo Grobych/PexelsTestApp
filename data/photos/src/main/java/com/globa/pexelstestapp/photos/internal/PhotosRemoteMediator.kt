@@ -46,24 +46,33 @@ class PhotosRemoteMediator(
             val response = networkDataSource.getCurated(
                 page = page
             )
-            val endOfPaginationReached = response.photos.size < state.config.pageSize
-
-            database.withTransaction {
-                if (loadType == LoadType.REFRESH) {
-                    database.photosDao.clearAll()
-                    database.photosRemoteKeyDao.clearAll()
+            when (val r = response) {
+                is PhotosNetworkResponse.Error -> {
+                    MediatorResult.Error(
+                        Throwable(message = "${r.code}: ${r.message}")
+                    )
                 }
-                val prevKey = if (page == initialPage) null else page - 1
-                val nextKey = if (endOfPaginationReached) null else page + 1
-                val keys = response.photos.map {
-                    PhotoRemoteKey(photoId = it.id, prevKey = prevKey, nextKey = nextKey)
+                is PhotosNetworkResponse.Ok -> {
+                    val endOfPaginationReached = r.photos.size < state.config.pageSize
+                    database.withTransaction {
+                        if (loadType == LoadType.REFRESH) {
+                            database.photosDao.clearAll()
+                            database.photosRemoteKeyDao.clearAll()
+                        }
+                        val prevKey = if (page == initialPage) null else page - 1
+                        val nextKey = if (endOfPaginationReached) null else page + 1
+                        val keys = r.photos.map {
+                            PhotoRemoteKey(photoId = it.id, prevKey = prevKey, nextKey = nextKey)
+                        }
+                        database.photosDao.insertAll(r.photos.map { it.asDBModel() })
+                        database.photosRemoteKeyDao.insertAll(keys)
+                    }
+                    MediatorResult.Success(
+                        endOfPaginationReached = endOfPaginationReached
+                    )
                 }
-                database.photosDao.insertAll(response.photos.map { it.asDBModel() })
-                database.photosRemoteKeyDao.insertAll(keys)
             }
-            MediatorResult.Success(
-                endOfPaginationReached = endOfPaginationReached
-            )
+
         } catch (e: IOException) {
             MediatorResult.Error(e)
         } catch (e: HttpException) {
@@ -76,8 +85,10 @@ class PhotosRemoteMediator(
         return withContext(Dispatchers.IO) {
             if (Date().time - database.photosDao.getLastUpdated() <= cacheTimeout)
             {
+                println("Skip initial refresh")
                 InitializeAction.SKIP_INITIAL_REFRESH
             } else {
+                println("Launch initial refresh")
                 InitializeAction.LAUNCH_INITIAL_REFRESH
             }
         }
