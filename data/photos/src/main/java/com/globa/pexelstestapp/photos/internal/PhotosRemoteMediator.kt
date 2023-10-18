@@ -15,7 +15,6 @@ import java.io.InvalidObjectException
 
 @OptIn(ExperimentalPagingApi::class)
 class PhotosRemoteMediator(
-    private val line: String,
     private val database: PhotosDatabase,
     private val networkDataSource: PhotosNetworkDataSource,
     private val remoteKeyDataSource: PhotoRemoteKeyDataSource
@@ -40,8 +39,7 @@ class PhotosRemoteMediator(
                     remoteKeys.nextKey ?: return MediatorResult.Success(true)
                 }
             }
-            val response = networkDataSource.getPhotos(
-                line = line,
+            val response = networkDataSource.getCurated(
                 page = page
             )
             val endOfPaginationReached = response.photos.size < state.config.pageSize

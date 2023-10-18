@@ -1,42 +1,31 @@
 package com.globa.pexelstestapp.photos.internal
 
 import com.globa.pexeltestapp.network.api.PexelPhotosNetworkAPI
-import com.globa.pexeltestapp.network.api.model.CuratedResult
 import com.globa.pexeltestapp.network.api.model.PhotoResource
-import com.globa.pexeltestapp.network.api.model.SearchResult
 import javax.inject.Inject
 
 class PhotosNetworkDataSource @Inject constructor(
     private val api: PexelPhotosNetworkAPI
 ) {
 
-    suspend fun getPhotos(line: String, page: Int): PhotosNetworkResponse {
-        val result = if (line.isEmpty()) api.getCuratedPhotos(pageNumber = page)
-        else api.searchPhotos(line = line, pageNumber = page)
-        return when (val r = result.body()) {
-            is CuratedResult -> PhotosNetworkResponse(
-                currentPage = r.page,
-                nextPage = r.nextPageURL,
-                prevPage = r.previousPageURL,
-                photos = r.photos
-            )
+    suspend fun getCurated(page: Int): PhotosNetworkResponse {
+        val result = api.getCuratedPhotos(pageNumber = page).body()
+        return PhotosNetworkResponse(
+            currentPage = result!!.page,
+            nextPage = result.nextPageURL,
+            prevPage = result.previousPageURL,
+            photos = result.photos
+        )
+    }
 
-            is SearchResult -> PhotosNetworkResponse(
-                currentPage = r.page,
-                nextPage = r.nextPageURL,
-                prevPage = r.previousPageURL,
-                photos = r.photos
-            )
-
-            else -> {
-                PhotosNetworkResponse(
-                    currentPage = 0,
-                    nextPage = null,
-                    prevPage = null,
-                    photos = emptyList() //TODO: use sealed?
-                )
-            }
-        }
+    suspend fun search(line: String, page: Int): PhotosNetworkResponse {
+        val result = api.searchPhotos(line = line, pageNumber = page).body()
+        return PhotosNetworkResponse(
+            currentPage = result!!.page,
+            nextPage = result.nextPageURL,
+            prevPage = result.previousPageURL,
+            photos = result.photos
+        )
     }
 }
 

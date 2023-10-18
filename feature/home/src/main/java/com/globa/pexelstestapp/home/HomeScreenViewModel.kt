@@ -33,16 +33,23 @@ class HomeScreenViewModel @Inject constructor(
     @OptIn(FlowPreview::class)
     fun searchFieldInit() {
         searchLine
-            .debounce(500)
+            .debounce(1000)
             .onEach {
-                fetchPhotos(it)
+                if (it.isEmpty()) fetchCurated()
+                else searchPhotos(it)
             }
             .launchIn(viewModelScope)
     }
-    private suspend fun fetchPhotos(searchLine: String) {
+    private suspend fun fetchCurated() {
         _photosUiState.value =
             HomeScreenPhotosUiState.Data(
-                data = photoRepository.getPhotos(searchLine)
+                data = photoRepository.getCurated()
+            )
+    }
+    private suspend fun searchPhotos(line: String) {
+        _photosUiState.value =
+            HomeScreenPhotosUiState.Data(
+                data = photoRepository.searchPhoto(line)
             )
     }
 

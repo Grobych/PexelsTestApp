@@ -19,10 +19,9 @@ class PhotoRepositoryImpl @Inject constructor(
     private val database: PhotosDatabase
 ): PhotoRepository {
     @OptIn(ExperimentalPagingApi::class)
-    override suspend fun getPhotos(searchLine: String): Flow<PagingData<Photo>> = Pager(
+    override suspend fun getCurated(): Flow<PagingData<Photo>> = Pager(
         config = PagingConfig(pageSize = pageSize),
         remoteMediator = PhotosRemoteMediator(
-            line = searchLine,
             database = database,
             networkDataSource = photosNetworkDataSource,
             remoteKeyDataSource = remoteKeyDataSource
@@ -31,4 +30,10 @@ class PhotoRepositoryImpl @Inject constructor(
             database.photosDao.getPhotos()
         }
     ).flow.map { pagingData -> pagingData.map { it.asDomainModel() } }
+
+    override suspend fun searchPhoto(searchLine: String):
+        Flow<PagingData<Photo>> = Pager(
+            config = PagingConfig(pageSize = pageSize),
+            pagingSourceFactory = {SearchPhotoPagingSource(searchLine,photosNetworkDataSource)}
+        ).flow
 }
