@@ -6,6 +6,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.globa.pexelstestapp.home.HomeScreen
 
 @Composable
 fun NavController() {
@@ -14,7 +15,7 @@ fun NavController() {
         composable(
             route = "home"
         ) {
-            //HomeScreen
+            HomeScreen(onPhotoClick = {})
         }
         composable(
             route = "details?photoId={photoId}",

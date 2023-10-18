@@ -25,15 +25,18 @@ class HomeScreenViewModel @Inject constructor(
     private val _photosUiState = MutableStateFlow<HomeScreenPhotosUiState>(HomeScreenPhotosUiState.Init)
     val photosUiState = _photosUiState.asStateFlow()
 
-    fun updateSearchLine(line: String) = _searchLine.update { it }
+    fun updateSearchLine(line: String) = _searchLine.update { line }
 
+    init {
+        searchFieldInit()
+    }
     @OptIn(FlowPreview::class)
     fun searchFieldInit() {
         searchLine
+            .debounce(500)
             .onEach {
                 fetchPhotos(it)
-        }
-            .debounce(1000)
+            }
             .launchIn(viewModelScope)
     }
     private suspend fun fetchPhotos(searchLine: String) {

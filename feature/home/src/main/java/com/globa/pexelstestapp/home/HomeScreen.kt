@@ -3,6 +3,7 @@ package com.globa.pexelstestapp.home
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
@@ -30,26 +31,38 @@ fun HomeScreen(
     val refresh = fun() {
 
     }
-    Header(searchLine = searchLine.value, onSearchLineChanged = onSearchLineChanged)
-
-    when (val state = uiState.value) {
-        is HomeScreenPhotosUiState.Data -> {
-            val photos = state.data.collectAsLazyPagingItems()
-            if (photos.itemCount > 0) {
-                PhotoGrid(photos = state.data.collectAsLazyPagingItems(), onPhotoClick = onPhotoClick)
-            } else {
-                NoItemsPlaceholder(
-                    onExploreButtonClick = onExploreButtonClick
+    Scaffold(
+        topBar = {
+            Header(searchLine = searchLine.value, onSearchLineChanged = onSearchLineChanged)
+        }
+    ) {
+        when (val state = uiState.value) {
+            is HomeScreenPhotosUiState.Data -> {
+                val photos = state.data.collectAsLazyPagingItems()
+                if (photos.itemCount == 0 && searchLine.value.isNotEmpty()) {
+                    NoItemsPlaceholder(
+                        modifier = Modifier.padding(it),
+                        onExploreButtonClick = onExploreButtonClick
+                    )
+                } else {
+                    PhotoGrid(
+                        modifier = Modifier.padding(it),
+                        photos = state.data.collectAsLazyPagingItems(),
+                        onPhotoClick = onPhotoClick
+                    )
+                }
+            }
+            HomeScreenPhotosUiState.Init -> {}
+            HomeScreenPhotosUiState.NetworkConnectionError -> {
+                NetworkErrorPlaceholder(
+                    modifier = Modifier.padding(it),
+                    onRefreshButtonClick = refresh
                 )
             }
         }
-        HomeScreenPhotosUiState.Init -> {}
-        HomeScreenPhotosUiState.NetworkConnectionError -> {
-            NetworkErrorPlaceholder(
-                onRefreshButtonClick = refresh
-            )
-        }
     }
+
+
 }
 
 @Composable
