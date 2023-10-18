@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface PhotosDao {
-    @Query("select * from photos")
+    @Query("select * from photos order by timestamp asc")
     fun getPhotos(): PagingSource<Int, PhotoDBModel>
     @Query("select * from photos where id = :id")
     fun getPhotoById(id: Int): Flow<PhotoDBModel>
