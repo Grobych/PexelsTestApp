@@ -55,6 +55,8 @@ dependencies {
     implementation(libs.hilt.core)
     kapt(libs.hilt.compiler)
 
+    implementation(libs.bundles.coil)
+
     implementation(libs.paging.core)
     implementation(libs.paging.compose)
 
