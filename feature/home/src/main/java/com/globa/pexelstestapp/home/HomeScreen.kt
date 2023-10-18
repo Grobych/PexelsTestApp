@@ -9,6 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.collectAsLazyPagingItems
+import com.globa.pexelstestapp.home.internal.NetworkErrorPlaceholder
 import com.globa.pexelstestapp.home.internal.NoItemsPlaceholder
 import com.globa.pexelstestapp.home.internal.PhotoGrid
 import com.globa.pexelstestapp.home.internal.SearchField
@@ -26,6 +27,9 @@ fun HomeScreen(
     val onExploreButtonClick = fun() {
         viewModel.updateSearchLine("")
     }
+    val refresh = fun() {
+
+    }
     Header(searchLine = searchLine.value, onSearchLineChanged = onSearchLineChanged)
 
     when (val state = uiState.value) {
@@ -40,7 +44,11 @@ fun HomeScreen(
             }
         }
         HomeScreenPhotosUiState.Init -> {}
-        HomeScreenPhotosUiState.NetworkConnectionError -> TODO()
+        HomeScreenPhotosUiState.NetworkConnectionError -> {
+            NetworkErrorPlaceholder(
+                onRefreshButtonClick = refresh
+            )
+        }
     }
 }
 
