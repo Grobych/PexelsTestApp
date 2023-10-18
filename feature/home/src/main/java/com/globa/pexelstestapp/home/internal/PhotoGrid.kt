@@ -3,7 +3,8 @@ package com.globa.pexelstestapp.home.internal
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
@@ -35,14 +36,14 @@ internal fun PhotoGrid(
     LazyVerticalStaggeredGrid(
         columns = StaggeredGridCells.Fixed(count = photosGridColumnCount),
         modifier = modifier,
+        verticalItemSpacing = 15.dp,
+        contentPadding = PaddingValues(24.dp),
+        horizontalArrangement = Arrangement.spacedBy(17.dp),
         content = {
             items(photos.itemCount) {
                 photos[it]?.let { photo ->
                     SubcomposeAsyncImage(
                         modifier = Modifier
-                            .padding(
-                                15.dp
-                            )
                             .clickable(
                                 onClick = { onPhotoClick(photo.id) },
                             )
