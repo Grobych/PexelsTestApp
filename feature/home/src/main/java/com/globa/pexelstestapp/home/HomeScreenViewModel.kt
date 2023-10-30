@@ -8,7 +8,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -57,9 +56,6 @@ class HomeScreenViewModel @Inject constructor(
         _photosUiState.value =
             HomeScreenPhotosUiState.Data(
                 data = photoRepository.searchPhoto(line)
-                    .catch {
-
-                    }
             )
         _showLoadingAnimation.value = false
     }
