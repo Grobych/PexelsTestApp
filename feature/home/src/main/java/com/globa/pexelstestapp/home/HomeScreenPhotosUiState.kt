@@ -8,5 +8,4 @@ sealed class HomeScreenPhotosUiState {
     data class Data(
         val data: Flow<PagingData<Photo>>?
     ): HomeScreenPhotosUiState()
-    object NetworkConnectionError: HomeScreenPhotosUiState()
 }

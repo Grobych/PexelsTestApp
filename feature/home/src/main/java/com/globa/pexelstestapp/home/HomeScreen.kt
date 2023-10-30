@@ -10,6 +10,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.globa.pexelstestapp.home.internal.NetworkErrorPlaceholder
 import com.globa.pexelstestapp.home.internal.NoItemsPlaceholder
@@ -32,9 +33,6 @@ fun HomeScreen(
     val onExploreButtonClick = fun() {
         viewModel.updateSearchLine("")
     }
-    val refresh = fun() {
-
-    }
     Scaffold(
         topBar = {
             Column(
@@ -50,25 +48,32 @@ fun HomeScreen(
             is HomeScreenPhotosUiState.Data -> {
                 state.data?.let { data ->
                     val photos = data.collectAsLazyPagingItems()
-                    if (photos.itemCount == 0 && searchLine.value.isNotEmpty()) {
-                        NoItemsPlaceholder(
+                    val errorState = when {
+                        photos.loadState.prepend is LoadState.Error -> photos.loadState.prepend as LoadState.Error
+                        photos.loadState.append is LoadState.Error -> photos.loadState.append as LoadState.Error
+                        photos.loadState.refresh is LoadState.Error -> photos.loadState.refresh as LoadState.Error
+                        else -> null
+                    }
+                    if (errorState != null) {
+                        NetworkErrorPlaceholder(
                             modifier = Modifier.padding(it),
-                            onExploreButtonClick = onExploreButtonClick
+                            onRefreshButtonClick = { photos.refresh() }
                         )
                     } else {
-                        PhotoGrid(
-                            modifier = Modifier.padding(it),
-                            photos = data.collectAsLazyPagingItems(),
-                            onPhotoClick = onPhotoClick
-                        )
+                        if (photos.itemCount == 0 && searchLine.value.isNotEmpty()) {
+                            NoItemsPlaceholder(
+                                modifier = Modifier.padding(it),
+                                onExploreButtonClick = onExploreButtonClick
+                            )
+                        } else {
+                            PhotoGrid(
+                                modifier = Modifier.padding(it),
+                                photos = data.collectAsLazyPagingItems(),
+                                onPhotoClick = onPhotoClick
+                            )
+                        }
                     }
                 }
-            }
-            HomeScreenPhotosUiState.NetworkConnectionError -> {
-                NetworkErrorPlaceholder(
-                    modifier = Modifier.padding(it),
-                    onRefreshButtonClick = refresh
-                )
             }
         }
     }

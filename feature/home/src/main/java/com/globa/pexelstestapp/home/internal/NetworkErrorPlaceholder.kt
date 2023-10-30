@@ -34,7 +34,9 @@ fun NetworkErrorPlaceholder(
         Icon(
             painter = painterResource(id = R.drawable.ic_no_network),
             contentDescription = "No network",
-            modifier = Modifier.size(width = 125.dp, height = 100.dp),
+            modifier = Modifier
+                .size(width = 125.dp, height = 100.dp)
+                .padding(bottom = 24.dp),
             tint = MaterialTheme.colorScheme.onSurface
         )
         Text(
@@ -44,7 +46,6 @@ fun NetworkErrorPlaceholder(
             modifier = Modifier.clickable {
                 onRefreshButtonClick()
             }
-                .padding(top = 24.dp)
         )
     }
 }
